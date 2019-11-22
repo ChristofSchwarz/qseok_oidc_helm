@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: oidcpassthrough-service-ingress
+  annotations:
+#    nginx.ingress.kubernetes.io/rewrite-target: /
+#    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    kubernetes.io/ingress.class: qlik-nginx
+spec:
+  rules:
+    - http:
+        paths:
+#          - path:  /oidc
+          - path:  /oidc(/|$)(.*)
+            backend:
+              serviceName: oidcpassthrough-service
+              servicePort: 3000

@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oidcpassthrough
+  labels:
+    app: oidcpassthrough
+spec:
+  replicas: {{ .Values.replicaCount}}
+  selector:
+    matchLabels:
+      app: oidcpassthrough
+  template:
+    metadata:
+      labels:
+        app: oidcpassthrough
+    spec:
+      containers:
+      - name: oidcpassthrough
+        image: {{ .Values.oidcDepl.image}}
+        env:
+        - name: jwt_decrypt_publicKey
+          value: {{ .Values.oidcDepl.jwt_decrypt_publicKey}}
+        - name: client_id
+          value: {{ .Values.oidcDepl.client_id}}
+        - name: client_secret
+          value: {{ .Values.oidcDepl.client_secret}}
+        - name: NODE_TLS_REJECT_UNAUTHORIZED
+          value: "0"
+        - name: PATH_PREFIX
+          value: "/oidc"
+        - name: redirect_uris
+          value: {{ .Values.oidcDepl.redirect_uris}}
+
+
+
+
+
+        imagePullPolicy: {{ .Values.oidcDepl.imagePullPolicy}}
+        ports:
+        - containerPort: {{ .Values.oidcService.portInNode}}
