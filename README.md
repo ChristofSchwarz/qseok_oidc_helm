@@ -15,6 +15,11 @@ helm install -n oidc ./qseok_oidc_helm
  
 ### Idea
 
+In the first year of Qlik Sense Enterprise on Kubernetes, a few things are yet missing which Qlik Sense had
+on its Windows version: The concept of Single-Signon (SSO) with a so-called virtual proxy. In some client discussion,
+especially in the OEM business, the lack of SSO became a killer criteria for the Kubernetes version, so we
+started this innovation project.
+
 ### Solution
 
 The solution is based on this git https://github.com/panva/node-oidc-provider and on Qlik's own interpretation 
