@@ -11,6 +11,8 @@ git clone https://github.com/ChristofSchwarz/qseok_oidc_helm
 nano ./qseok_oidc_helm/values.yaml
 helm install -n oidc ./qseok_oidc_helm
 ```
+ ![alttext](https://github.com/ChristofSchwarz/pics/raw/master/oidc-screenshot1.png "screenshot")
+ 
 ### Idea
 
 ### Solution
