@@ -34,8 +34,8 @@ a seemless single-sign on, as our manipulated version of that OIDC provider will
 prompting anything and then proceeds in the OIDC process (send the user back to Qlik, then edge-auth pod does
 some more communication with the IDP to validate the access_token etc - standard OAuth 2.0 behaviour). 
 
-So in short: We extended the 3-legged implicit OAuth 2.0 flow (which is at the core of OIDC) by a 4th leg, which 
-is where you will start when using single-signon.
+So in short: We extended the 3-legged implicit OAuth 2.0 flow (which is at the core of OIDC) by a 4th leg up front, that 
+is where you will start the single-signon process.
 
 
 
