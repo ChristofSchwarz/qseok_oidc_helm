@@ -19,8 +19,10 @@ helm install -n oidc ./qseok_oidc_helm
 
 The solution is based on this git https://github.com/panva/node-oidc-provider and on Qlik's own interpretation 
 of that git, which is bundled into QSEoK when you launch Qlik Sense with parameters edge-auth.oidc.enabled=true 
-... In contrast to a normal behaviour of an OIDC provider, where the user would be redirected to enter his/her 
-password and to give this consent for QSEoK to access his/her profile, this simplified version has no user
+... 
+
+In contrast to a normal behaviour of an OIDC provider, where the user would be redirected to the OIDC to enter his/her 
+password and to give his/her consent for QSEoK to access his/her profile, this simplified version has no user
 management or password prompt. It expects a special cookie, which a newly written endpoint had left for moment 
 when Qlik Sense redirects the unauthenticated, incoming user to the OIDC provider of choice. Then this becomes
 a seemless single-sign on, as our manipulated version of that OIDC provider will read the cookie instead of 
