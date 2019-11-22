@@ -7,9 +7,9 @@ This helm starts
 ```
 
 ```
-Idea:
+### Idea
 
-Solution:
+### Solution
 
 
 
