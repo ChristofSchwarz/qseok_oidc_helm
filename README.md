@@ -5,6 +5,8 @@ Project by **Jacob Vinzent** and **Christof Schwarz**
 
 This helm starts a pseudo oidc provider for Qlik Sense Enterprise on Kubernetes (QSEoK) which enables a single-sign on possibility using a JWT token.
 
+### How to install
+
 To run it, clone this project into a folder, edit values.yaml, and deploy it
 ```
 git clone https://github.com/ChristofSchwarz/qseok_oidc_helm
@@ -13,6 +15,9 @@ helm install -n oidc ./qseok_oidc_helm
 ```
  ![alttext](https://github.com/ChristofSchwarz/pics/raw/master/oidc-screenshot1.png "screenshot")
  
+Test that the Kubernetes components (the ingress, the service, the deployment, the pod) work, this address should resolve with a reply (assuing you have another hostname than 192.168.56.234)
+https://192.168.56.234/oidc/.well-known/openid-configuration
+
 ### Idea
 
 In the first year of Qlik Sense Enterprise on Kubernetes, a few things are yet missing which Qlik Sense had
