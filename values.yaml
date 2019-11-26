@@ -5,7 +5,7 @@
 replicaCount: 1
 
 oidcDepl:
-  image: jviqlik/oidcpt7
+  image: jviqlik/passthruoidc:0.92
   imagePullPolicy: Always
   jwt_decrypt_publicKey: Qlik1234
   client_id: foo
