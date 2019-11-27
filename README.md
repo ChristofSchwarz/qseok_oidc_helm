@@ -41,8 +41,13 @@ Find your qliksense.yaml which you used to install qlik sense with helm. If you 
 ```
 helm get values qlik >qliksense.yaml
 ```
-Edit this file. Add a new entry under section "identity-providers.secrets.idpConfigs". Copy/paste the settings then modify accordingly:
+Edit qliksense.yaml with your editor of choice (e.g. nano). Add or merge the following entries. Copy/paste below settings then modify accordingly (edge-auth config enforceTLS and secureCookies is only needed if the qlik sense site runs with a non-public certificate).
 ```
+edge-auth:
+  config:
+    enforceTLS: false  # in case a self-signed certificate is used
+    secureCookies: false  # in case a self-signed certificate is used
+
 identity-providers:
   secrets:
     idpConfigs:
@@ -64,21 +69,40 @@ identity-providers:
  - clientId and clientSecret: match the values of the values.yaml from Part 1
  - postLogoutRedirectUri: Where to go back after logout, basically your main web app, same you specified as "post_logout_redirects" and "fwd_no_cookie" under values.yaml from Part 1
 
-Apply the changes
+Apply the changes and restart identity-providers and edge-auth pods
 ```
 helm upgrade --install qlik qlik-stable/qliksense -f qliksense.yaml
+kubectl delete pod --selector app=edge-auth
+kubectl delete pod --selector app=identity-providers
 ```
-If your qlik sense site **doesn't use public certificates**, the edge-auth pod will not accept the OIDC (even it is an ingress under the same server url). You have to patch the edge-auth deployment:
+If your qlik sense site **doesn't use public certificates**, the edge-auth pod will still not accept the OIDC (in this case we already provided two settings in qliksense.yaml above). You have to also patch the edge-auth deployment (repeat when a new version of qliksense is deployed):
 ```
 kubectl patch deployment qlik-edge-auth -p '{"spec":{"template":{"spec":{"containers":[{"name":"edge-auth", "env":[{"name":"NODE_TLS_REJECT_UNAUTHORIZED","value":"0"}]}]}}}}'
 ```
+(If you are using a non-public address like https://elastic.example from your hosts file, you have to teach the same host alias to the edge-auth pod - or how should it know this mapping of your host computer:
+```
+kubectl patch deployment qlik-edge-auth -p '{"spec":{"template":{"spec":{"hostAliases":[{"hostnames":["elastic.example"],"ip":"192.168.56.234"}]}}}}'
+```
+)
 
 ### Part 3/3
 
+Now you can use your single-signon. The installation is like this animation below (note that compared to a standard OIDC process, 
+we've added an addtional first step)
+
 ![alttext](https://github.com/ChristofSchwarz/pics/raw/master/passthruoidc.gif "screenshot")
 
+Create a token and test the login (that's what you would also do later with your main app). You can provide the JWT token either
+ * as querystring in the url ?jwt={yourtoken}
+ * as Bearer Authentication (preferred way) in the http header 
+
+Also, you must put a "forward" parameter with the destination of qlik sense (hub, a space, an app ...) 
+
+Create a token 
+ * <a href="https://jwt.io/#debugger-io?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Imp1YiIsIm5hbWUiOiJDaHJpc3RvZiBKYWNvYiIsImdyb3VwcyI6WyJFdmVyeW9uZSIsIlByZXNhbGVzIl0sImlhdCI6MTY3MzgwNTc4Mn0.zAHTHnGYILv1ZNk7sxnhCm_VJh0TxCKy7lNAHHtitDY">with a passphrase (HS256)</a> (if you had put the same passphrase in Part 1)
+ * <a href="">with a private key (RS256)</a> (if you had put the matching public key in Part 1)
 Example:
-https://elastic.example/oidc/signin?forward=https://elastic.example&jwt=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Imp1YiIsIm5hbWUiOiJDaHJpc3RvZiBKYWNvYiIsImdyb3VwcyI6WyJFdmVyeW9uZSIsIk9FTSJdLCJpYXQiOjE2NzM4MDU3ODJ9.QFBdlGIPTLS4wS63lfCkRyqx80tapgzRIqiyYTmZpZW3EZERywgm7164SF1iDDZxOsgCAenRAW165jSgZAU7aOU1pFprl6FKd0umxKUs55TO6m2KeQHHHhDlXcKiWBtjW-KWVTFYHDVh6Md0DDHjLbyVaZQ5PIYnoSS33OTC4KMSSmDUrivvGK0uDf9naOWbWVdQgHXLRpMeV35iZwzRMVSg3XGSO0_h2CrkWWYWGHvgiR-2ZfdHE_j8emlsuFGiFrQzFXpHFXULnCmYHgOS2LuekIhr-TYjIdSBkDOcoC6WM-PZoBCQ9ZZa1M2oadhkMAZlqRNYL29Cyl29yGjk1Q
+https://elastic.example/oidc/signin?forward=https://elastic.example/explore/spaces/all&jwt=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Imp1YiIsIm5hbWUiOiJDaHJpc3RvZiBKYWNvYiIsImdyb3VwcyI6WyJFdmVyeW9uZSIsIk9FTSJdLCJpYXQiOjE2NzM4MDU3ODJ9.QFBdlGIPTLS4wS63lfCkRyqx80tapgzRIqiyYTmZpZW3EZERywgm7164SF1iDDZxOsgCAenRAW165jSgZAU7aOU1pFprl6FKd0umxKUs55TO6m2KeQHHHhDlXcKiWBtjW-KWVTFYHDVh6Md0DDHjLbyVaZQ5PIYnoSS33OTC4KMSSmDUrivvGK0uDf9naOWbWVdQgHXLRpMeV35iZwzRMVSg3XGSO0_h2CrkWWYWGHvgiR-2ZfdHE_j8emlsuFGiFrQzFXpHFXULnCmYHgOS2LuekIhr-TYjIdSBkDOcoC6WM-PZoBCQ9ZZa1M2oadhkMAZlqRNYL29Cyl29yGjk1Q
 
 
 ### Idea
