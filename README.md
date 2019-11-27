@@ -7,16 +7,27 @@ This helm starts a pseudo oidc provider for Qlik Sense Enterprise on Kubernetes 
 
 ### How to install
 
-To run it, clone this project into a folder, edit values.yaml, and deploy it
+To run it, clone this project into a folder, then values.yaml and also edit the qliksense.yaml to add this as an identity-provider, then deploy this helm and upgrade qliksense. We will discuss this steps:
+
+Get this repo and edit the values
 ```
 git clone https://github.com/ChristofSchwarz/qseok_oidc_helm
 nano ./qseok_oidc_helm/values.yaml
-helm install -n oidc ./qseok_oidc_helm
+```
+
+```
+helm upgrade --install oidc ./qseok_oidc_helm -f values.yaml
+# check the settings that the pod has received from your values (env variables)
+kubectl exec $(kubectl get pods -o=name --selector app=oidcpassthrough) env|grep -v QLIK
 ```
  ![alttext](https://github.com/ChristofSchwarz/pics/raw/master/oidc-screenshot1.png "screenshot")
  
 Test that the Kubernetes components (the ingress, the service, the deployment, the pod) work, this address should resolve with a reply (assuing you have another hostname than 192.168.56.234)
 https://192.168.56.234/oidc/.well-known/openid-configuration
+
+Example:
+https://elastic.example/oidc/signin?forward=https://elastic.example&jwt=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Imp1YiIsIm5hbWUiOiJDaHJpc3RvZiBKYWNvYiIsImdyb3VwcyI6WyJFdmVyeW9uZSIsIk9FTSJdLCJpYXQiOjE2NzM4MDU3ODJ9.QFBdlGIPTLS4wS63lfCkRyqx80tapgzRIqiyYTmZpZW3EZERywgm7164SF1iDDZxOsgCAenRAW165jSgZAU7aOU1pFprl6FKd0umxKUs55TO6m2KeQHHHhDlXcKiWBtjW-KWVTFYHDVh6Md0DDHjLbyVaZQ5PIYnoSS33OTC4KMSSmDUrivvGK0uDf9naOWbWVdQgHXLRpMeV35iZwzRMVSg3XGSO0_h2CrkWWYWGHvgiR-2ZfdHE_j8emlsuFGiFrQzFXpHFXULnCmYHgOS2LuekIhr-TYjIdSBkDOcoC6WM-PZoBCQ9ZZa1M2oadhkMAZlqRNYL29Cyl29yGjk1Q
+
 
 ### Idea
 
