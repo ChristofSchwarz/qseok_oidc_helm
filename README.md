@@ -7,22 +7,25 @@ This helm starts a pseudo oidc provider for Qlik Sense Enterprise on Kubernetes 
 
 ### How to install
 
-To run it, clone this project into a folder, then values.yaml and also edit the qliksense.yaml to add this as an identity-provider, then deploy this helm and upgrade qliksense. We will discuss this steps:
+To run it, clone this project into a folder, then values.yaml and also edit the qliksense.yaml to add this as an identity-provider, then deploy this helm and upgrade qliksense. We will discuss this steps (note I am using elastic.example as the placeholder for my qlik sense url, but it works with any other unlike Qlik's simple-oidc solution):
 
 Get this repo and edit the values
 ```
 git clone https://github.com/ChristofSchwarz/qseok_oidc_helm
 nano ./qseok_oidc_helm/values.yaml
 ```
-
+To understand the meaning of each value, see comments in <a href="templates/oidc_depl.yaml>oidc_depl.yaml</a> and for a example 
+ have a look at <a href="values.yaml">values.yaml</a>
 ```
-helm upgrade --install oidc ./qseok_oidc_helm -f values.yaml
-# check the settings that the pod has received from your values (env variables)
-kubectl exec $(kubectl get pods -o=name --selector app=oidcpassthrough) env|grep -v QLIK
+helm upgrade --install oidc ./qseok_oidc_helm -f ./qseok_oidc_helm/values.yaml
 ```
  ![alttext](https://github.com/ChristofSchwarz/pics/raw/master/oidc-screenshot1.png "screenshot")
- 
-Test that the Kubernetes components (the ingress, the service, the deployment, the pod) work, this address should resolve with a reply (assuing you have another hostname than 192.168.56.234)
+
+You can check, that the settings made it into the newly created pod as env variables
+```
+kubectl exec $(kubectl get pods -o=name --selector app=oidcpassthrough) env|grep -v QLIK
+```
+Since we deployed this passthrough oidc as an ingress route within qlik sense, connect to your main address this address should resolve with a reply (assuing you have another hostname than 192.168.56.234)
 https://192.168.56.234/oidc/.well-known/openid-configuration
 
 Example:
