@@ -14,8 +14,9 @@ Get this repo and edit the values
 git clone https://github.com/ChristofSchwarz/qseok_oidc_helm
 nano ./qseok_oidc_helm/values.yaml
 ```
-To understand the meaning of each value, see comments in <a href="templates/oidc_depl.yaml">oidc_depl.yaml</a> and for a example 
- have a look at <a href="values.yaml">values.yaml</a>
+Have a look at <a href="values.yaml">values.yaml</a> to see possible settings. To understand the meaning of each setting, see comments in <a href="templates/oidc_depl.yaml">oidc_depl.yaml</a>
+
+Then roll out the helm installation. It will install a Deployment, a Service, and an Ingress
 ```
 helm upgrade --install oidc ./qseok_oidc_helm -f ./qseok_oidc_helm/values.yaml
 ```
