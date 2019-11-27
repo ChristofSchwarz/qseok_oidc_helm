@@ -10,8 +10,8 @@ spec:
   rules:
     - http:
         paths:
-#          - path:  /oidc
-          - path:  /oidc(/|$)(.*)
+#          - path:  /oidc(/|$)(.*)
+          - path: "{{ .Values.oidcDepl.path_prefix }}(/|$)(.*)"
             backend:
               serviceName: oidcpassthrough-service
               servicePort: 3000
