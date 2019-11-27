@@ -1,4 +1,4 @@
-## Helm Chart for the Single-Signon Passthru ODIC
+# Helm Chart for the Single-Signon Passthru ODIC
 helm name: oidc_passthrough
 
 Project by **Jacob Vinzent** and **Christof Schwarz**
@@ -103,11 +103,11 @@ Example of a full url:
 https://elastic.example/oidc/signin?forward=https://elastic.example/explore/spaces/all&jwt=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Imp1YiIsIm5hbWUiOiJDaHJpc3RvZiBKYWNvYiIsImdyb3VwcyI6WyJFdmVyeW9uZSIsIk9FTSJdLCJpYXQiOjE2NzM4MDU3ODJ9.QFBdlGIPTLS4wS63lfCkRyqx80tapgzRIqiyYTmZpZW3EZERywgm7164SF1iDDZxOsgCAenRAW165jSgZAU7aOU1pFprl6FKd0umxKUs55TO6m2KeQHHHhDlXcKiWBtjW-KWVTFYHDVh6Md0DDHjLbyVaZQ5PIYnoSS33OTC4KMSSmDUrivvGK0uDf9naOWbWVdQgHXLRpMeV35iZwzRMVSg3XGSO0_h2CrkWWYWGHvgiR-2ZfdHE_j8emlsuFGiFrQzFXpHFXULnCmYHgOS2LuekIhr-TYjIdSBkDOcoC6WM-PZoBCQ9ZZa1M2oadhkMAZlqRNYL29Cyl29yGjk1Q
 
 
-### Idea
+## Idea
 
 In the year 2019 (the launch of Qlik Sense Enterprise on Kubernetes), a concept of a Single-Signon (SSO) was yet missing. In some client discussion, especially in the OEM business, the lack of SSO became a k.o. criteria for the Kubernetes version, so we (Jacob Vinzent and Christof Schwarz) started this innovation project. The only way to login to Qlik Sense was via an OIDC (Open-ID Connect) compliant identity-provider
 
-### Solution
+## Solution
 
 The solution is based on this git https://github.com/panva/node-oidc-provider and on Qlik's own interpretation 
 of that git, which is bundled into QSEoK when you launch Qlik Sense with parameters edge-auth.oidc.enabled=true 
