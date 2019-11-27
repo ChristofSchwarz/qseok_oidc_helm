@@ -6,7 +6,8 @@ replicaCount: 1
 
 oidcDepl:
   image: jviqlik/passthruoidc:0.92
-  imagePullPolicy: Always
+  #imagePullPolicy: Always
+  imagePullPolicy: IfNotPresent
   path_prefix: "/oidc"
   client_id: "foo"
   client_secret: "thanksjviandcsw"
