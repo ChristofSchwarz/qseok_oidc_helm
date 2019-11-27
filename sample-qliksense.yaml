@@ -1,0 +1,16 @@
+# This would be relevant settings to be added to your qliksense.yaml 
+
+identity-providers:
+  secrets:
+    idpConfigs:
+      - hostname: "analytics.company.com" 
+        realm: "sso"              
+        discoveryUrl: "https://analytics.company.com/oidc/.well-known/openid-configuration"
+        postLogoutRedirectUri: "https://mainapp.company.com"
+        clientId: "foo"
+        clientSecret: "thanksjviandcsw"
+        scope: "openid profile"
+        claimsMapping:
+           name: ["name"]
+           sub: ["sub", "id"]
+           groups: ["groups"]
