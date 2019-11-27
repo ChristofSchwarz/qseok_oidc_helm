@@ -79,11 +79,11 @@ If your qlik sense site **doesn't use public certificates**, the edge-auth pod w
 ```
 kubectl patch deployment qlik-edge-auth -p '{"spec":{"template":{"spec":{"containers":[{"name":"edge-auth", "env":[{"name":"NODE_TLS_REJECT_UNAUTHORIZED","value":"0"}]}]}}}}'
 ```
-(If you are using a non-public address like https://elastic.example from your hosts file, you have to teach the same host alias to the edge-auth pod - or how should it know this mapping of your host computer:
+(If you are using a non-public address like https://elastic.example from your hosts file, you have to teach the same host alias to the edge-auth pod - or how should it know this mapping of your host computer:)
 ```
 kubectl patch deployment qlik-edge-auth -p '{"spec":{"template":{"spec":{"hostAliases":[{"hostnames":["elastic.example"],"ip":"192.168.56.234"}]}}}}'
 ```
-)
+
 
 ### Part 3/3
 
@@ -99,8 +99,8 @@ Create a token and test the login (that's what you would also do later with your
 Also, you must put a "forward" parameter with the destination of qlik sense (hub, a space, an app ...) 
 
 Create a token 
- * <a href="https://jwt.io/#debugger-io?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Imp1YiIsIm5hbWUiOiJDaHJpc3RvZiBKYWNvYiIsImdyb3VwcyI6WyJFdmVyeW9uZSIsIlByZXNhbGVzIl0sImlhdCI6MTY3MzgwNTc4Mn0.zAHTHnGYILv1ZNk7sxnhCm_VJh0TxCKy7lNAHHtitDY">with a passphrase (HS256)</a> (if you had put the same passphrase in Part 1)
- * <a href="">with a private key (RS256)</a> (if you had put the matching public key in Part 1)
+ * <a href="https://jwt.io/#debugger-io?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Imp1YiIsIm5hbWUiOiJDaHJpc3RvZiBKYWNvYiIsImdyb3VwcyI6WyJFdmVyeW9uZSIsIlByZXNhbGVzIl0sImlhdCI6MTY3MzgwNTc4Mn0.zAHTHnGYILv1ZNk7sxnhCm_VJh0TxCKy7lNAHHtitDY">with a passphrase (HS256)</a> (if you had put the same passphrase in setting jwt_decrypt_publickey during Part 1)
+ * <a href="https://jwt.io/#debugger-io?token=eyJhbGciOiJSUzM4NCIsInR5cCI6IkpXVCJ9.eyJpZCI6Imp1YiIsIm5hbWUiOiJDaHJpc3RvZiBKYWNvYiIsImdyb3VwcyI6WyJFdmVyeW9uZSIsIlByZXNhbGVzIl0sImlhdCI6MTY3MzgwNTc4Mn0.TG7MG635c2hi9-zQCxueJt8ivitZ7XlFcQHaWMY-Wa081alx70Fh0AN3FejQ96c1rDuhp9mOQeHjvPxoDWfzAh1OLyizpY8w_gxEZj2tFQydEo6SWbfM9bL-zxWB9mP_soxSgEIkS6PzA0ys-wHOf8IwbH1lZZPzQneW2EFIXFjmRMMqNe9dIVPeY48_-clUUNMJk7yZWMj4Rl7W9-eaOMS5txcfmmw7Brvo4pJhj4U4BHCM0Mf5MvEk3rA8dUL2KcGY8Jzn_IsjrosBRVXRV2y8NjDkJYt16Ep1Vg6LSgiMpbdY37-BwwaIPPcuQHP0hfE8uoggElahEv7qyz7Yeg">with a private key (RS256)</a> (if you had put the matching public key in setting jwt_decrypt_publickey during Part 1)
 Example:
 https://elastic.example/oidc/signin?forward=https://elastic.example/explore/spaces/all&jwt=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Imp1YiIsIm5hbWUiOiJDaHJpc3RvZiBKYWNvYiIsImdyb3VwcyI6WyJFdmVyeW9uZSIsIk9FTSJdLCJpYXQiOjE2NzM4MDU3ODJ9.QFBdlGIPTLS4wS63lfCkRyqx80tapgzRIqiyYTmZpZW3EZERywgm7164SF1iDDZxOsgCAenRAW165jSgZAU7aOU1pFprl6FKd0umxKUs55TO6m2KeQHHHhDlXcKiWBtjW-KWVTFYHDVh6Md0DDHjLbyVaZQ5PIYnoSS33OTC4KMSSmDUrivvGK0uDf9naOWbWVdQgHXLRpMeV35iZwzRMVSg3XGSO0_h2CrkWWYWGHvgiR-2ZfdHE_j8emlsuFGiFrQzFXpHFXULnCmYHgOS2LuekIhr-TYjIdSBkDOcoC6WM-PZoBCQ9ZZa1M2oadhkMAZlqRNYL29Cyl29yGjk1Q
 
