@@ -87,10 +87,7 @@ kubectl patch deployment qlik-edge-auth -p '{"spec":{"template":{"spec":{"hostAl
 
 ### Part 3/3
 
-Now you can use your single-signon. The installation is like this animation below (note that compared to a standard OIDC process, 
-we've added an addtional first step)
-
-![alttext](https://github.com/ChristofSchwarz/pics/raw/master/passthruoidc.gif "screenshot")
+Now you can use your single-signon.
 
 Create a token and test the login (that's what you would also do later with your main app). You can provide the JWT token either
  * as querystring in the url ?jwt={yourtoken}
@@ -101,16 +98,14 @@ Also, you must put a "forward" parameter with the destination of qlik sense (hub
 Create a token 
  * <a href="https://jwt.io/#debugger-io?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Imp1YiIsIm5hbWUiOiJDaHJpc3RvZiBKYWNvYiIsImdyb3VwcyI6WyJFdmVyeW9uZSIsIlByZXNhbGVzIl0sImlhdCI6MTY3MzgwNTc4Mn0.zAHTHnGYILv1ZNk7sxnhCm_VJh0TxCKy7lNAHHtitDY">with a passphrase (HS256)</a> (if you had put the same passphrase in setting jwt_decrypt_publickey during Part 1)
  * <a href="https://jwt.io/#debugger-io?token=eyJhbGciOiJSUzM4NCIsInR5cCI6IkpXVCJ9.eyJpZCI6Imp1YiIsIm5hbWUiOiJDaHJpc3RvZiBKYWNvYiIsImdyb3VwcyI6WyJFdmVyeW9uZSIsIlByZXNhbGVzIl0sImlhdCI6MTY3MzgwNTc4Mn0.TG7MG635c2hi9-zQCxueJt8ivitZ7XlFcQHaWMY-Wa081alx70Fh0AN3FejQ96c1rDuhp9mOQeHjvPxoDWfzAh1OLyizpY8w_gxEZj2tFQydEo6SWbfM9bL-zxWB9mP_soxSgEIkS6PzA0ys-wHOf8IwbH1lZZPzQneW2EFIXFjmRMMqNe9dIVPeY48_-clUUNMJk7yZWMj4Rl7W9-eaOMS5txcfmmw7Brvo4pJhj4U4BHCM0Mf5MvEk3rA8dUL2KcGY8Jzn_IsjrosBRVXRV2y8NjDkJYt16Ep1Vg6LSgiMpbdY37-BwwaIPPcuQHP0hfE8uoggElahEv7qyz7Yeg">with a private key (RS256)</a> (if you had put the matching public key in setting jwt_decrypt_publickey during Part 1)
-Example:
+
+Example of a full url:
 https://elastic.example/oidc/signin?forward=https://elastic.example/explore/spaces/all&jwt=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Imp1YiIsIm5hbWUiOiJDaHJpc3RvZiBKYWNvYiIsImdyb3VwcyI6WyJFdmVyeW9uZSIsIk9FTSJdLCJpYXQiOjE2NzM4MDU3ODJ9.QFBdlGIPTLS4wS63lfCkRyqx80tapgzRIqiyYTmZpZW3EZERywgm7164SF1iDDZxOsgCAenRAW165jSgZAU7aOU1pFprl6FKd0umxKUs55TO6m2KeQHHHhDlXcKiWBtjW-KWVTFYHDVh6Md0DDHjLbyVaZQ5PIYnoSS33OTC4KMSSmDUrivvGK0uDf9naOWbWVdQgHXLRpMeV35iZwzRMVSg3XGSO0_h2CrkWWYWGHvgiR-2ZfdHE_j8emlsuFGiFrQzFXpHFXULnCmYHgOS2LuekIhr-TYjIdSBkDOcoC6WM-PZoBCQ9ZZa1M2oadhkMAZlqRNYL29Cyl29yGjk1Q
 
 
 ### Idea
 
-In the first year of Qlik Sense Enterprise on Kubernetes, a few things are yet missing which Qlik Sense had
-on its Windows version: The concept of Single-Signon (SSO) with a so-called virtual proxy. In some client discussion,
-especially in the OEM business, the lack of SSO became a killer criteria for the Kubernetes version, so we
-started this innovation project.
+In the year 2019 (the launch of Qlik Sense Enterprise on Kubernetes), a concept of a Single-Signon (SSO) was yet missing. In some client discussion, especially in the OEM business, the lack of SSO became a k.o. criteria for the Kubernetes version, so we (Jacob Vinzent and Christof Schwarz) started this innovation project. The only way to login to Qlik Sense was via an OIDC (Open-ID Connect) compliant identity-provider
 
 ### Solution
 
@@ -127,7 +122,8 @@ prompting anything and then proceeds in the OIDC process (send the user back to 
 some more communication with the IDP to validate the access_token etc - standard OAuth 2.0 behaviour). 
 
 So in short: We extended the 3-legged implicit OAuth 2.0 flow (which is at the core of OIDC) by a 4th leg up front, that 
-is where you will start the single-signon process.
+is where you will start the single-signon process - this animation illustrates that:
 
+![alttext](https://github.com/ChristofSchwarz/pics/raw/master/passthruoidc.gif "screenshot")
 
 
