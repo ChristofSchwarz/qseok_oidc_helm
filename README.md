@@ -14,7 +14,7 @@ Get this repo and edit the values
 git clone https://github.com/ChristofSchwarz/qseok_oidc_helm
 nano ./qseok_oidc_helm/values.yaml
 ```
-To understand the meaning of each value, see comments in <a href="templates/oidc_depl.yaml>oidc_depl.yaml</a> and for a example 
+To understand the meaning of each value, see comments in <a href="templates/oidc_depl.yaml">oidc_depl.yaml</a> and for a example 
  have a look at <a href="values.yaml">values.yaml</a>
 ```
 helm upgrade --install oidc ./qseok_oidc_helm -f ./qseok_oidc_helm/values.yaml
