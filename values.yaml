@@ -7,10 +7,15 @@ replicaCount: 1
 oidcDepl:
   image: jviqlik/passthruoidc:0.92
   imagePullPolicy: Always
-  jwt_decrypt_publicKey: Qlik1234
-  client_id: foo
-  client_secret: bar
-  redirect_uris: https://qseok.qlik-poc.com/login/callback
-oidcService:
-  portInNode: 3000
-  exposedOnPort: 3000
+  path_prefix: "/oidc"
+  client_id: "foo"
+  client_secret: "thanksjviandcsw"
+  oidc_redirects: "https://elastic.example/login/callback"
+  post_logout_redirects: "https://www.qlik.com"
+  jwt_decrypt_publickey: "shhhh"
+  msg_login: "Logging in..."
+  msg_token_accepted: "Token accepted."
+  msg_no_cookie: "Please go to your main web app and restart login process"
+  fwd_no_cookie: "https://www.qlik.com"
+  
+  
