@@ -41,10 +41,42 @@ Find your qliksense.yaml which you used to install qlik sense with helm. If you 
 ```
 helm get values qlik >qliksense.yaml
 ```
+Edit this file. Add a new entry under section "identity-providers.secrets.idpConfigs". Copy/paste the settings then modify accordingly:
+```
+identity-providers:
+  secrets:
+    idpConfigs:
+      - hostname: "analytics.company.com" 
+        realm: "sso"              
+        discoveryUrl: "https://analytics.company.com/oidc/.well-known/openid-configuration"
+        postLogoutRedirectUri: "https://mainapp.company.com"
+        clientId: "foo"
+        clientSecret: "thanksjviandcsw"
+        scope: "openid profile"
+        claimsMapping:
+           name: ["name"]
+           sub: ["sub", "id"]
+           groups: ["groups"]
+```
+ - hostname : the main address of your web server (without https and without any sub-page, no "/")
+ - realm: will be the prefix for all user ids within qlik
+ - discoveryUrl: the full url to the ingress route of the .well-known/openid-configuration (we tested it above) 
+ - clientId and clientSecret: match the values of the values.yaml from Part 1
+ - postLogoutRedirectUri: Where to go back after logout, basically your main web app, same you specified as "post_logout_redirects" and "fwd_no_cookie" under values.yaml from Part 1
 
-
+Apply the changes
+```
+helm upgrade --install qlik qlik-stable/qliksense -f qliksense.yaml
+```
+If your qlik sense site **doesn't use public certificates**, the edge-auth pod will not accept the OIDC (even it is an ingress under the same server url). You have to patch the edge-auth deployment:
+```
+kubectl patch deployment qlik-edge-auth -p '{"spec":{"template":{"spec":{"containers":[{"name":"edge-auth", "env":[{"name":"NODE_TLS_REJECT_UNAUTHORIZED","value":"0"}]}]}}}}'
+```
 
 ### Part 3/3
+
+![alttext](https://github.com/ChristofSchwarz/pics/raw/master/passthruoidc.gif "screenshot")
+
 Example:
 https://elastic.example/oidc/signin?forward=https://elastic.example&jwt=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Imp1YiIsIm5hbWUiOiJDaHJpc3RvZiBKYWNvYiIsImdyb3VwcyI6WyJFdmVyeW9uZSIsIk9FTSJdLCJpYXQiOjE2NzM4MDU3ODJ9.QFBdlGIPTLS4wS63lfCkRyqx80tapgzRIqiyYTmZpZW3EZERywgm7164SF1iDDZxOsgCAenRAW165jSgZAU7aOU1pFprl6FKd0umxKUs55TO6m2KeQHHHhDlXcKiWBtjW-KWVTFYHDVh6Md0DDHjLbyVaZQ5PIYnoSS33OTC4KMSSmDUrivvGK0uDf9naOWbWVdQgHXLRpMeV35iZwzRMVSg3XGSO0_h2CrkWWYWGHvgiR-2ZfdHE_j8emlsuFGiFrQzFXpHFXULnCmYHgOS2LuekIhr-TYjIdSBkDOcoC6WM-PZoBCQ9ZZa1M2oadhkMAZlqRNYL29Cyl29yGjk1Q
 
