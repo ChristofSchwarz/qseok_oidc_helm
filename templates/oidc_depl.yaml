@@ -35,6 +35,11 @@ spec:
           # will have the home address https://elastic.example/oidc (where elastic.example is 
           # your sense server.
           value: "{{ .Values.oidcDepl.path_prefix}}"
+
+        - name: FULL_BASE_URL
+          # /!\ The full url (incl protocol, host and port) to connect to the top endpoint of
+          # the oidc (this ends with the path_prefix, no trailling "/")
+          value: "{{ .Values.oidcDepl.full_base_url}}"
           
         - name: OIDC_REDIRECTS
           # be "https://elastic.example/login/callback" as this is the expected return-to
