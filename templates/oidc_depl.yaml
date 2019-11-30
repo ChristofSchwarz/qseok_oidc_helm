@@ -38,7 +38,8 @@ spec:
 
         - name: FULL_BASE_URL
           # /!\ The full url (incl protocol, host and port) to connect to the top endpoint of
-          # the oidc (this ends with the path_prefix, no trailling "/")
+          # the oidc (this ends with the path_prefix, no trailling "/"). This appears like 
+          # redundant information, but the Passthrough OIDC may also run outside qliksense ingress.
           value: "{{ .Values.oidcDepl.full_base_url}}"
           
         - name: OIDC_REDIRECTS
