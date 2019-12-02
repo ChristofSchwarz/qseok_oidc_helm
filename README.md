@@ -87,7 +87,9 @@ kubectl patch deployment qlik-edge-auth -p '{"spec":{"template":{"spec":{"hostAl
 
 ### Part 3/3
 
-Now you can use your single-signon.
+Now you can use your single-signon. There are two ways with some flavours, so pick your preferred single signon way. They all have in common that you must tell the Passthrough OIDC a JWT token with a user claim.
+
+...
 
 Create a token and test the login (that's what you would also do later with your main app). You can provide the JWT token either
  * as querystring in the url ?jwt={yourtoken}
