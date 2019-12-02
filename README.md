@@ -89,15 +89,10 @@ kubectl patch deployment qlik-edge-auth -p '{"spec":{"template":{"spec":{"hostAl
 
 Now you can use your single-signon. There are two ways with some flavours, so pick your preferred single signon way. They all have in common that you must tell the Passthrough OIDC a JWT token with a user claim.
 
-...
+ - make sure you have a key pair (public key, private key)
+ - make sure you have the jsonwebtoken library for your main web app to issue tokens dynamically upon login
 
-Create a token and test the login (that's what you would also do later with your main app). You can provide the JWT token either
- * as querystring in the url ?jwt={yourtoken}
- * as Bearer Authentication (preferred way) in the http header 
-
-Also, you must put a "forward" parameter with the destination of qlik sense (hub, a space, an app ...) 
-
-Create a token 
+Create a token online for test purposes:
  * <a href="https://jwt.io/#debugger-io?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Imp1YiIsIm5hbWUiOiJDaHJpc3RvZiBKYWNvYiIsImdyb3VwcyI6WyJFdmVyeW9uZSIsIlByZXNhbGVzIl0sImlhdCI6MTY3MzgwNTc4Mn0.zAHTHnGYILv1ZNk7sxnhCm_VJh0TxCKy7lNAHHtitDY">with a passphrase (HS256)</a> (if you had put the same passphrase in setting jwt_decrypt_publickey during Part 1)
  * <a href="https://jwt.io/#debugger-io?token=eyJhbGciOiJSUzM4NCIsInR5cCI6IkpXVCJ9.eyJpZCI6Imp1YiIsIm5hbWUiOiJDaHJpc3RvZiBKYWNvYiIsImdyb3VwcyI6WyJFdmVyeW9uZSIsIlByZXNhbGVzIl0sImlhdCI6MTY3MzgwNTc4Mn0.TG7MG635c2hi9-zQCxueJt8ivitZ7XlFcQHaWMY-Wa081alx70Fh0AN3FejQ96c1rDuhp9mOQeHjvPxoDWfzAh1OLyizpY8w_gxEZj2tFQydEo6SWbfM9bL-zxWB9mP_soxSgEIkS6PzA0ys-wHOf8IwbH1lZZPzQneW2EFIXFjmRMMqNe9dIVPeY48_-clUUNMJk7yZWMj4Rl7W9-eaOMS5txcfmmw7Brvo4pJhj4U4BHCM0Mf5MvEk3rA8dUL2KcGY8Jzn_IsjrosBRVXRV2y8NjDkJYt16Ep1Vg6LSgiMpbdY37-BwwaIPPcuQHP0hfE8uoggElahEv7qyz7Yeg">with a private key (RS256)</a> (if you had put the matching public key in setting jwt_decrypt_publickey during Part 1)
 
