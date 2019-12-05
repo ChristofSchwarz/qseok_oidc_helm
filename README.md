@@ -106,21 +106,7 @@ In the year 2019 (the launch of Qlik Sense Enterprise on Kubernetes), a concept 
 
 ## Solution
 
-The solution is based on this git https://github.com/panva/node-oidc-provider and on Qlik's own interpretation 
-of that git, which is bundled into QSEoK when you launch Qlik Sense with parameters edge-auth.oidc.enabled=true 
-... 
+The solution is based on this git https://github.com/panva/node-oidc-provider. We changed it to become this solution: https://github.com/ChristofSchwarz/qseok_sso_oidc (read the details there)
 
-In contrast to a normal behaviour of an OIDC provider, where the user would be redirected to the OIDC to enter his/her 
-password and to give his/her consent for QSEoK to access his/her profile, this simplified version has no user
-management or password prompt. It expects a special cookie, which a newly written endpoint had left for moment 
-when Qlik Sense redirects the unauthenticated, incoming user to the OIDC provider of choice. Then this becomes
-a seemless single-sign on, as our manipulated version of that OIDC provider will read the cookie instead of 
-prompting anything and then proceeds in the OIDC process (send the user back to Qlik, then edge-auth pod does
-some more communication with the IDP to validate the access_token etc - standard OAuth 2.0 behaviour). 
-
-So in short: We extended the 3-legged implicit OAuth 2.0 flow (which is at the core of OIDC) by a 4th leg up front, that 
-is where you will start the single-signon process - this animation illustrates that:
-
-![alttext](https://github.com/ChristofSchwarz/pics/raw/master/passthruoidc.gif "screenshot")
 
 
