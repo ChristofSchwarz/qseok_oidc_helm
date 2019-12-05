@@ -107,7 +107,7 @@ and then add the ticket number which you got to the destination url of Qlik Sens
 
 ## Troubleshooting
 
-This commands can help bring visibility of what's going on when do single sign-on:
+These commands can help bring visibility of what's going on when do single sign-on:
 ```
 # live monitor the container (press Ctrl-C to end)
 kubectl attach $(kubectl get pod -o=name --selector app=oidcpassthrough)
