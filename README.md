@@ -1,9 +1,18 @@
 # Helm Chart for the Single-Signon Passthru ODIC
-helm name: oidc_passthrough
 
 Innovation Project by **Jacob Vinzent** and **Christof Schwarz** (Nov-Dec 2019)
 
 This helm starts a special oidc provider for Qlik Sense Enterprise on Kubernetes (QSEoK) which enables a single-sign on possibility using a JWT token.
+
+## Idea
+
+Since the only way to login to Qlik Sense until today is via an OIDC (Open-ID Connect) compliant identity-provider, we had to write a special one: 
+ - we took a certified opensource OIDC provider as boilerplate https://github.com/panva/node-oidc-provider
+ - we changed it to become this one https://github.com/ChristofSchwarz/qseok_sso_oidc 
+ - User is impersonated using a JWT token (claims in the payload, secured with key signature)
+ - Solution runs as route within qliksense url (ingress)
+
+![screenshot](https://github.com/ChristofSchwarz/pics/raw/master/passthruoidc.gif "screenshot")
 
 ## How to install
 
@@ -116,12 +125,13 @@ kubectl attach $(kubectl get pod -o=name --selector app=oidcpassthrough)
 kubectl logs --selector app=oidcpassthrough
 ```
 
-## Idea
-
-In the year 2019 (the launch of Qlik Sense Enterprise on Kubernetes), a concept of a Single-Signon (SSO) was yet missing. In 
-some client discussion, especially in the OEM business, the lack of SSO became a critical criteria for the Kubernetes version, 
-so we (Jacob Vinzent and Christof Schwarz) started this innovation project. Since the only way to login to Qlik Sense was via 
-an OIDC (Open-ID Connect) compliant identity-provider, we wrote a special one: The solution is based on this git https://github.com/panva/node-oidc-provider. We changed it to become this solution: https://github.com/ChristofSchwarz/qseok_sso_oidc (read more the details there).
-
-
+If an error is created on qliksense side like this:
+```
+{"errors":[{"title":"Invalid identity provider configuration","code":"INVALID-IDP-CONFIG","status":"401"}]}
+```
+check the log of edge-auth pod
+```
+kubectl logs --selector app=edge-auth
+```
+If qliksense isn't using a public certificate, edge-auth has to be patched (see above Part 2/3)
 
