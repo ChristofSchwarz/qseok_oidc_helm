@@ -28,10 +28,10 @@ You can check, that the settings made it into the newly created pod as env varia
 kubectl exec $(kubectl get pods -o=name --selector app=oidcpassthrough) env|grep -v QLIK
 ```
 Since we deployed this passthrough oidc as an ingress route within qlik sense, connect to your qlik sense server address and the path prefix (here /oidc which is the default), those endpoints should work
- - https://elastic.example/oidc
- - https://elastic.example/oidc/.well-known/openid-configuration
- - https://elastic.example/oidc/env
- - https://elastic.example/oidc/signin
+ - https://elastic.example/singlesignon
+ - https://elastic.example/singlesignon/.well-known/openid-configuration
+ - https://elastic.example/singlesignon/env
+ - https://elastic.example/singlesignon/signin
 
 ### Part 2/3 - Configure QSEoK
 
@@ -53,9 +53,9 @@ identity-providers:
     idpConfigs:
       - hostname: "analytics.company.com" 
         realm: "sso"              
-        discoveryUrl: "https://analytics.company.com/oidc/.well-known/openid-configuration"
+        discoveryUrl: "https://analytics.company.com/singlesignon/.well-known/openid-configuration"
         postLogoutRedirectUri: "https://mainapp.company.com"
-        clientId: "foo"
+        clientId: "singlesignon"
         clientSecret: "thanksjviandcsw"
         scope: "openid profile"
         claimsMapping:
@@ -64,7 +64,7 @@ identity-providers:
            groups: ["groups"]
 ```
  - hostname : the main address of your web server (without https and without any sub-page, no "/")
- - realm: will be the prefix for all user ids within qlik
+ - realm: will be the prefix for all user ids within Qlik, like in above example the user with id csw will be sso\csw in Qlik
  - discoveryUrl: the full url to the ingress route of the .well-known/openid-configuration (we tested it above) 
  - clientId and clientSecret: match the values of the values.yaml from Part 1
  - postLogoutRedirectUri: Where to go back after logout, basically your main web app, same you specified as "post_logout_redirects" and "fwd_no_cookie" under values.yaml from Part 1
@@ -88,7 +88,7 @@ kubectl exec $(kubectl get pod --selector app=edge-auth -o name) cat /etc/hosts
 
 ### Part 3/3
 
-Now you can use your single-signon. There are two ways with some flavours, so pick your preferred single signon way. They all have in common that you must tell the Passthrough OIDC a JWT token with a user claim.
+Now you can use your single-signon. There are two ways with some flavours, so pick your preferred single signon way. They all have in common that the main web page must pass a JWT token with a user claim (payload) to this passthrough-oidc provider.
 
  - make sure you have a key pair (public key, private key)
  - make sure you have the jsonwebtoken library for your main web app to issue tokens dynamically upon login
@@ -100,14 +100,23 @@ Create a token online for test purposes:
 Example of a full url:
 https://elastic.example/oidc/signin?forward=https://elastic.example/explore/spaces/all&jwt=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Imp1YiIsIm5hbWUiOiJDaHJpc3RvZiBKYWNvYiIsImdyb3VwcyI6WyJFdmVyeW9uZSIsIk9FTSJdLCJpYXQiOjE2NzM4MDU3ODJ9.QFBdlGIPTLS4wS63lfCkRyqx80tapgzRIqiyYTmZpZW3EZERywgm7164SF1iDDZxOsgCAenRAW165jSgZAU7aOU1pFprl6FKd0umxKUs55TO6m2KeQHHHhDlXcKiWBtjW-KWVTFYHDVh6Md0DDHjLbyVaZQ5PIYnoSS33OTC4KMSSmDUrivvGK0uDf9naOWbWVdQgHXLRpMeV35iZwzRMVSg3XGSO0_h2CrkWWYWGHvgiR-2ZfdHE_j8emlsuFGiFrQzFXpHFXULnCmYHgOS2LuekIhr-TYjIdSBkDOcoC6WM-PZoBCQ9ZZa1M2oadhkMAZlqRNYL29Cyl29yGjk1Q
 
+## Troubleshooting
+
+This commands can help bring visibility of what's going on when do single sign-on:
+```
+# live monitor the container (press Ctrl-C to end)
+kubectl attach $(kubectl get pod -o=name --selector app=oidcpassthrough)
+
+# see the log output
+kubectl logs --selector app=oidcpassthrough
+```
 
 ## Idea
 
-In the year 2019 (the launch of Qlik Sense Enterprise on Kubernetes), a concept of a Single-Signon (SSO) was yet missing. In some client discussion, especially in the OEM business, the lack of SSO became a k.o. criteria for the Kubernetes version, so we (Jacob Vinzent and Christof Schwarz) started this innovation project. The only way to login to Qlik Sense was via an OIDC (Open-ID Connect) compliant identity-provider
-
-## Solution
-
-The solution is based on this git https://github.com/panva/node-oidc-provider. We changed it to become this solution: https://github.com/ChristofSchwarz/qseok_sso_oidc (read the details there)
+In the year 2019 (the launch of Qlik Sense Enterprise on Kubernetes), a concept of a Single-Signon (SSO) was yet missing. In 
+some client discussion, especially in the OEM business, the lack of SSO became a critical criteria for the Kubernetes version, 
+so we (Jacob Vinzent and Christof Schwarz) started this innovation project. Since the only way to login to Qlik Sense was via 
+an OIDC (Open-ID Connect) compliant identity-provider, we wrote a special one: The solution is based on this git https://github.com/panva/node-oidc-provider. We changed it to become this solution: https://github.com/ChristofSchwarz/qseok_sso_oidc (read more the details there).
 
 
 
