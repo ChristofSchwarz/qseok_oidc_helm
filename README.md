@@ -1,9 +1,9 @@
 # Helm Chart for the Single-Signon Passthru ODIC
 helm name: oidc_passthrough
 
-Project by **Jacob Vinzent** and **Christof Schwarz**
+Innovation Project by **Jacob Vinzent** and **Christof Schwarz** (Nov-Dec 2019)
 
-This helm starts a pseudo oidc provider for Qlik Sense Enterprise on Kubernetes (QSEoK) which enables a single-sign on possibility using a JWT token.
+This helm starts a special oidc provider for Qlik Sense Enterprise on Kubernetes (QSEoK) which enables a single-sign on possibility using a JWT token.
 
 ## How to install
 
