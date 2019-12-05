@@ -15,7 +15,7 @@ Get this repo and edit the values
 git clone https://github.com/ChristofSchwarz/qseok_oidc_helm
 nano ./qseok_oidc_helm/values.yaml
 ```
-Have a look at <a href="values.yaml">values.yaml</a> to see possible settings. To understand the meaning of each setting, see comments in <a href="templates/oidc_depl.yaml">oidc_depl.yaml</a>
+Have a look at <a href="values.yaml">values.yaml</a> to see possible settings and my comments for the meaning of each setting.
 
 Then roll out the helm installation. It will install a Deployment, a Service, and an Ingress
 ```
@@ -86,19 +86,24 @@ kubectl exec $(kubectl get pod --selector app=edge-auth -o name) cat /etc/hosts
 ```
 
 
-### Part 3/3
+### Part 3/3 - Create tokens
 
 Now you can use your single-signon. There are two ways with some flavours, so pick your preferred single signon way. They all have in common that the main web page must pass a JWT token with a user claim (payload) to this passthrough-oidc provider.
 
  - make sure you have a key pair (public key, private key)
  - make sure you have the jsonwebtoken library for your main web app to issue tokens dynamically upon login
 
-Create a token online for test purposes:
- * <a href="https://jwt.io/#debugger-io?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Imp1YiIsIm5hbWUiOiJDaHJpc3RvZiBKYWNvYiIsImdyb3VwcyI6WyJFdmVyeW9uZSIsIlByZXNhbGVzIl0sImlhdCI6MTY3MzgwNTc4Mn0.zAHTHnGYILv1ZNk7sxnhCm_VJh0TxCKy7lNAHHtitDY">with a passphrase (HS256)</a> (if you had put the same passphrase in setting jwt_decrypt_publickey during Part 1)
- * <a href="https://jwt.io/#debugger-io?token=eyJhbGciOiJSUzM4NCIsInR5cCI6IkpXVCJ9.eyJpZCI6Imp1YiIsIm5hbWUiOiJDaHJpc3RvZiBKYWNvYiIsImdyb3VwcyI6WyJFdmVyeW9uZSIsIlByZXNhbGVzIl0sImlhdCI6MTY3MzgwNTc4Mn0.TG7MG635c2hi9-zQCxueJt8ivitZ7XlFcQHaWMY-Wa081alx70Fh0AN3FejQ96c1rDuhp9mOQeHjvPxoDWfzAh1OLyizpY8w_gxEZj2tFQydEo6SWbfM9bL-zxWB9mP_soxSgEIkS6PzA0ys-wHOf8IwbH1lZZPzQneW2EFIXFjmRMMqNe9dIVPeY48_-clUUNMJk7yZWMj4Rl7W9-eaOMS5txcfmmw7Brvo4pJhj4U4BHCM0Mf5MvEk3rA8dUL2KcGY8Jzn_IsjrosBRVXRV2y8NjDkJYt16Ep1Vg6LSgiMpbdY37-BwwaIPPcuQHP0hfE8uoggElahEv7qyz7Yeg">with a private key (RS256)</a> (if you had put the matching public key in setting jwt_decrypt_publickey during Part 1)
+Make a simple test? Use the /signin endpoint (setting in this values.yaml must be signin_endpoint_enabled: true) 
+ - Create a token online for test purposes:
+   * <a href="https://jwt.io/#debugger-io?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Imp1YiIsIm5hbWUiOiJDaHJpc3RvZiBKYWNvYiIsImdyb3VwcyI6WyJFdmVyeW9uZSIsIlByZXNhbGVzIl0sImlhdCI6MTY3MzgwNTc4Mn0.zAHTHnGYILv1ZNk7sxnhCm_VJh0TxCKy7lNAHHtitDY">with a passphrase (HS256)</a> (if you had put the same passphrase in setting jwt_decrypt_publickey during Part 1)
+   * <a href="https://jwt.io/#debugger-io?token=eyJhbGciOiJSUzM4NCIsInR5cCI6IkpXVCJ9.eyJpZCI6Imp1YiIsIm5hbWUiOiJDaHJpc3RvZiBKYWNvYiIsImdyb3VwcyI6WyJFdmVyeW9uZSIsIlByZXNhbGVzIl0sImlhdCI6MTY3MzgwNTc4Mn0.TG7MG635c2hi9-zQCxueJt8ivitZ7XlFcQHaWMY-Wa081alx70Fh0AN3FejQ96c1rDuhp9mOQeHjvPxoDWfzAh1OLyizpY8w_gxEZj2tFQydEo6SWbfM9bL-zxWB9mP_soxSgEIkS6PzA0ys-wHOf8IwbH1lZZPzQneW2EFIXFjmRMMqNe9dIVPeY48_-clUUNMJk7yZWMj4Rl7W9-eaOMS5txcfmmw7Brvo4pJhj4U4BHCM0Mf5MvEk3rA8dUL2KcGY8Jzn_IsjrosBRVXRV2y8NjDkJYt16Ep1Vg6LSgiMpbdY37-BwwaIPPcuQHP0hfE8uoggElahEv7qyz7Yeg">with a private key (RS256)</a> (if you had put the matching public key in setting jwt_decrypt_publickey during Part 1)
+ - call the /signin endpoint like this (replace forward and jwt parameter accordingly) https://elastic.example/singlesignon/signin?forward=https://elastic.example/explore/spaces/all&jwt=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Imp1YiIsIm5hbWUiOiJDaHJpc3RvZiBKYWNvYiIsImdyb3VwcyI6WyJFdmVyeW9uZSIsIk9FTSJdLCJpYXQiOjE2NzM4MDU3ODJ9.QFBdlGIPTLS4wS63lfCkRyqx80tapgzRIqiyYTmZpZW3EZERywgm7164SF1iDDZxOsgCAenRAW165jSgZAU7aOU1pFprl6FKd0umxKUs55TO6m2KeQHHHhDlXcKiWBtjW-KWVTFYHDVh6Md0DDHjLbyVaZQ5PIYnoSS33OTC4KMSSmDUrivvGK0uDf9naOWbWVdQgHXLRpMeV35iZwzRMVSg3XGSO0_h2CrkWWYWGHvgiR-2ZfdHE_j8emlsuFGiFrQzFXpHFXULnCmYHgOS2LuekIhr-TYjIdSBkDOcoC6WM-PZoBCQ9ZZa1M2oadhkMAZlqRNYL29Cyl29yGjk1Q
 
-Example of a full url:
-https://elastic.example/oidc/signin?forward=https://elastic.example/explore/spaces/all&jwt=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Imp1YiIsIm5hbWUiOiJDaHJpc3RvZiBKYWNvYiIsImdyb3VwcyI6WyJFdmVyeW9uZSIsIk9FTSJdLCJpYXQiOjE2NzM4MDU3ODJ9.QFBdlGIPTLS4wS63lfCkRyqx80tapgzRIqiyYTmZpZW3EZERywgm7164SF1iDDZxOsgCAenRAW165jSgZAU7aOU1pFprl6FKd0umxKUs55TO6m2KeQHHHhDlXcKiWBtjW-KWVTFYHDVh6Md0DDHjLbyVaZQ5PIYnoSS33OTC4KMSSmDUrivvGK0uDf9naOWbWVdQgHXLRpMeV35iZwzRMVSg3XGSO0_h2CrkWWYWGHvgiR-2ZfdHE_j8emlsuFGiFrQzFXpHFXULnCmYHgOS2LuekIhr-TYjIdSBkDOcoC6WM-PZoBCQ9ZZa1M2oadhkMAZlqRNYL29Cyl29yGjk1Q
+In production, you would make a post call to the /ticket endpoint 
+![screenshot](https://github.com/ChristofSchwarz/pics/raw/master/2019-12-05%2019_49_41-Postman.png "screenshot")
+
+and then add the ticket number which you got to the destination url of Qlik Sense, for example
+ - https://elastic.example/explore/spaces/all?qlikticket=85201c55-c5dc-4371-a977-02d3d31de67a
 
 ## Troubleshooting
 
