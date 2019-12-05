@@ -18,80 +18,79 @@ spec:
       - name: oidcpassthrough
         image: {{ .Values.oidcDepl.image}}
         env:
-         
-        - name: CLIENT_ID
-          # /!\ Id of client (will be the only in this OIDC)
-          # --> this is also put into identity-providers section of qliksense.yaml
-          value: "{{ .Values.oidcDepl.client_id}}"
-          
-        - name: CLIENT_SECRET
-          # /!\ Secret (password) of client (will be the only in this OIDC)
-          # --> this is also put into identity-providers section of qliksense.yaml        
-          value: "{{ .Values.oidcDepl.client_secret}}"
-          
-        - name: PATH_PREFIX
-          # /!\ The ingress-route of the oidc provider's base address, one level below qliksense,
-          # start with / slash, for example "/oidc" which means, this oidc-passthrough service
-          # will have the home address https://elastic.example/oidc (where elastic.example is 
-          # your sense server.
-          value: "{{ .Values.oidcDepl.path_prefix}}"
 
-        - name: FULL_BASE_URL
-          # /!\ The full url (incl protocol, host and port) to connect to the top endpoint of
-          # the oidc (this ends with the path_prefix, no trailling "/"). This appears like 
-          # redundant information, but the Passthrough OIDC may also run outside qliksense ingress.
-          value: "{{ .Values.oidcDepl.full_base_url}}"
+        - name: PATH_PREFIX
+          value: "{{.Values.oidcDepl.path_prefix}}"
+
+        - name: CLIENT_ID
+          value: "{{.Values.oidcDepl.client_id}}"
           
-        - name: OIDC_REDIRECTS
-          # be "https://elastic.example/login/callback" as this is the expected return-to
-          # /!\ mandatory to tell the oidc the allowed qlik-sense return addresses, this should
-          # separate multiple values with comma
-          value: "{{ .Values.oidcDepl.oidc_redirects}}"
-          
-        - name: POST_LOGOUT_REDIRECTS
-          # /!\ Allowed redirect urls after logout, comma-separated. The effective redirect
-          # after logout is not configured here, but in qliksense.yaml (postLogoutRedirectUri) 
-          # The entry here is just for the oidc to accept the possible post-logout uri values 
-          value: "{{ .Values.oidcDepl.post_logout_redirects }}"
-          
-        - name: FORWARD_URLS
-          # /!\ a bit of security so that the /signon endpoint cannot be used to forward browsers
-          # to anywhere else than desired. This is a regex value to validate allowed forward urls 
-          # example "^https://elastic.example" (=any url that starts with https://elastic.example)
-          value: "{{ .Values.oidcDepl.forward_urls }}"  
-          
+        - name: CLIENT_SECRET  
+          value: "{{.Values.oidcDepl.client_secret}}"
+
         - name: JWT_DECRYPT_PUBLICKEY
-          # /!\ jwt passphrase (if HS256 is used) or the public key (if RS256 is used, recommended)
           value: {{ toYaml .Values.oidcDepl.jwt_decrypt_publickey }}
           
-        - name: MSG_TOKEN_ACCEPTED
-          # /!\ Text displayed for (less than) a second when /signon is called and the JWT was        
-          # accepted
-          value: "{{ .Values.oidcDepl.msg_token_accepted }}"
-        
+        - name: OIDC_REDIRECTS
+          value: "{{.Values.oidcDepl.oidc_redirects}}"
+          
+        - name: POST_LOGOUT_REDIRECTS
+          value: "{{.Values.oidcDepl.post_logout_redirects}}"
+
+        - name: SIGNIN_ENDPOINT_ENABLED
+          value: "{{.Values.oidcDepl.signin_endpoint_enabled}}"
+
+{{- if .Values.oidcDepl.forward_urls }}     
+        - name: FORWARD_URLS
+          value: "{{.Values.oidcDepl.forward_urls}}"  
+{{- end }}
+{{- if .Values.oidcDepl.msg_login }}          
         - name: MSG_LOGIN
-          # /!\ Header shown during the 2nd redirect to the authentication endpoint (/interaction/...)
           value: "{{ .Values.oidcDepl.msg_login }}"
-
-{{- if .Values.oidcDepl.msg_no_cookie }}          
-        - name: MSG_NO_COOKIE
-          # /!\ message shown in browser, if qlik sense calls the authentication endpoint without 
-          # having the /signin cookie. That is either when the cookie expired or the user tries to 
-          # go to Qlik Sense without /signon endpoint (qliksense still would redirect him here)
-          value: "{{ .Values.oidcDepl.msg_no_cookie }}"
+{{- end }}
+{{- if .Values.oidcDepl.msg_token_accepted }}          
+        - name: MSG_TOKEN_ACCEPTED
+          value: "{{ .Values.oidcDepl.msg_token_accepted }}"
+{{- end }}
+{{- if .Values.oidcDepl.error_title }}          
+        - name: ERROR_TITLE
+          value: "{{ .Values.oidcDepl.error_title }}"
+{{- end }}
+{{- if .Values.oidcDepl.error_msg_no_claim }}          
+        - name: ERROR_MSG_NO_CLAIM
+          value: "{{ .Values.oidcDepl.error_msg_no_claim }}"
+{{- end }}
+{{- if .Values.oidcDepl.error_msg_bad_token }}          
+        - name: ERROR_MSG_BAD_TOKEN
+          value: "{{ .Values.oidcDepl.error_msg_bad_token }}"
+{{- end }}
+{{- if .Values.oidcDepl.error_msg_no_params }}          
+        - name: ERROR_MSG_NO_PARAMS
+          value: "{{ .Values.oidcDepl.error_msg_no_params }}"
+{{- end }}
+{{- if .Values.oidcDepl.error_msg_no_jwt }}          
+        - name: ERROR_MSG_NO_JWT
+          value: "{{ .Values.oidcDepl.error_msg_no_jwt }}"
+{{- end }}
+{{- if .Values.oidcDepl.error_msg_no_fwd }}          
+        - name: ERROR_MSG_NO_FWD
+          value: "{{ .Values.oidcDepl.error_msg_no_fwd }}"
+{{- end }}
+{{- if .Values.oidcDepl.error_msg_bad_fwd }}          
+        - name: ERROR_MSG_BAD_FWD
+          value: "{{ .Values.oidcDepl.error_msg_bad_fwd }}"
+{{- end }}
+{{- if .Values.oidcDepl.error_redir_url }}          
+        - name: ERROR_REDIR_URL
+          value: "{{ .Values.oidcDepl.error_redir_url }}"
+{{- end }}
+{{- if .Values.oidcDepl.error_redir_after_seconds }}          
+        - name: ERROR_REDIR_AFTER_SECONDS
+          value: "{{ .Values.oidcDepl.error_redir_after_seconds }}"
 {{- end }}
 
-{{- if .Values.oidcDepl.fwd_no_cookie }}          
-        - name: FWD_NO_COOKIE
-          # /!\ same situation as above (see MSG_NO_COOKIE) but together with the message this 
-          # setting allows to provide an url to forward a user to, if silent signin cannot be done.
-          # You will likely want this to be the main web app and the same as provided in 
-          # post_logout_redirects
-          value: "{{ .Values.oidcDepl.fwd_no_cookie }}"
-{{- end }}
-
-#        - name: NODE_TLS_REJECT_UNAUTHORIZED
-#          value: "0"
+        - name: NODE_TLS_REJECT_UNAUTHORIZED
+          value: "0"
 
         imagePullPolicy: {{ .Values.oidcDepl.imagePullPolicy}}
         ports:
