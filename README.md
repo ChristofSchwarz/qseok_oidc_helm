@@ -82,6 +82,7 @@ kubectl patch deployment qlik-edge-auth -p '{"spec":{"template":{"spec":{"contai
 (If you are using a non-public address like https://elastic.example from your hosts file, you have to teach the same host alias to the edge-auth pod - or how should it know this mapping of your host computer:)
 ```
 kubectl patch deployment qlik-edge-auth -p '{"spec":{"template":{"spec":{"hostAliases":[{"hostnames":["elastic.example"],"ip":"192.168.56.234"}]}}}}'
+kubectl exec $(kubectl get pod --selector app=edge-auth -o name) cat /etc/hosts
 ```
 
 
