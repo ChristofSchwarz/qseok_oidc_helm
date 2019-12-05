@@ -5,7 +5,8 @@
 replicaCount: 1
 
 oidcDepl:
-  image: jviqlik/passthruoidc:v1.0
+  #image: jviqlik/passthruoidc:v1.0
+  image: qristof/qseokssooidc
   #imagePullPolicy: Always
   imagePullPolicy: IfNotPresent
   client_id: "singlesignon"
@@ -49,13 +50,13 @@ oidcDepl:
   msg_login: "Logging in..."  # title shown shortly when token was ok on /signin endpoint
   msg_token_accepted: "Token accepted." # text shown shortly when token was ok on /signin endpoint
   error_title: "Ooops! something went wrong"
+  error_redir_url: "http://localhost:5656/tryme.html"
+  error_redir_after_seconds: 3
   #error_msg_no_claim: ""
   #error_msg_bad_token: ""
   #error_msg_no_params: ""
   #error_msg_no_jwt: ""
   #error_msg_no_fwd: ""
   #error_msg_bad_fwd: ""
-  error_redir_url: "http://localhost:5656/tryme.html"
-  error_redir_after_seconds: 3
   
   
