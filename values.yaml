@@ -7,8 +7,8 @@ replicaCount: 1
 oidcDepl:
   #image: jviqlik/passthruoidc:v1.0
   image: qristof/qseokssooidc
-  #imagePullPolicy: Always
-  imagePullPolicy: IfNotPresent
+  imagePullPolicy: Always
+  #imagePullPolicy: IfNotPresent
   client_id: "singlesignon"
   client_secret: "thanksjviandcsw"
           # /!\ id and secret of the only client in the passthrough-oidc provider
