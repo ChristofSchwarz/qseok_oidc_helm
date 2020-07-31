@@ -6,7 +6,7 @@ replicaCount: 1
 
 oidcDepl:
   #image: jviqlik/passthruoidc:v1.0
-  image: qristof/qseokssooidc
+  image: qristof/qseoksso
   imagePullPolicy: Always
   #imagePullPolicy: IfNotPresent
   client_id: "singlesignon"
