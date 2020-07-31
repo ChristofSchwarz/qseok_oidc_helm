@@ -17,6 +17,9 @@ spec:
       containers:
       - name: oidcpassthrough
         image: {{ .Values.oidcDepl.image}}
+        imagePullPolicy: {{ .Values.oidcDepl.imagePullPolicy}}
+        ports:
+        - containerPort: 3000        
         env:
 
         - name: PATH_PREFIX
@@ -88,11 +91,11 @@ spec:
         - name: ERROR_REDIR_AFTER_SECONDS
           value: "{{ .Values.oidcDepl.error_redir_after_seconds }}"
 {{- end }}
-
+{{- if .Values.oidcDepl.error_redir_after_seconds }}          
+        - name: USE_JWT_WITHOUT_VALIDATION
+          value: "{{ .Values.oidcDepl.use_jwt_without_validation }}"
+{{- end }}
         - name: NODE_TLS_REJECT_UNAUTHORIZED
           value: "0"
 
-        imagePullPolicy: {{ .Values.oidcDepl.imagePullPolicy}}
-        ports:
-        - containerPort: 3000
         
